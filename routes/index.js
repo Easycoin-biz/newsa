@@ -220,7 +220,7 @@ router.get('/updatePromotion', checkAuthorization, (req, res) => {
         console.log(event);
         if(response.data.result.status == 1){
 
-          axios.patch(`https://easy-588b2-default-rtdb.firebaseio.com/promoted/-NleNTsaGIVxluVfkF3K.json`, {
+          axios.patch(`https://easy-588b2-default-rtdb.firebaseio.com/promoted/${key}.json`, {
             status: 1
           })
             .then(response => {

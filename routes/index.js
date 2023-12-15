@@ -34,6 +34,11 @@ const checkAuthorization = (req, res, next) => {
   }
 }
 
+router.get('/', (req, res) =>{
+
+  res.send('hello world')
+
+});
 
 /* GET home page. */
 router.get('/createPayment', function (req, res, next) {

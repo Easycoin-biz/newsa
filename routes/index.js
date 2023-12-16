@@ -319,7 +319,7 @@ router.get('/verifyIp/:ip', async (req, res, next) => {
 		var point = 0;
 		var id = null;
 		const response = await axios.get(
-			`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/.json`
+			`https://easy-588b2-default-rtdb.firebaseio.com/ipaddresses/.json`
 		);
 		const result = response.data;
 		if (result) {
@@ -342,7 +342,7 @@ router.get('/verifyIp/:ip', async (req, res, next) => {
 		}
 		if (!id) {
 			await axios.post(
-				`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/.json`,
+				`https://easy-588b2-default-rtdb.firebaseio.com/ipaddresses/.json`,
 				{
 					ip: ip,
 					n: 1,
@@ -354,7 +354,7 @@ router.get('/verifyIp/:ip', async (req, res, next) => {
 			if (Date.now() - data[point].time >= 3600000 || data[point].n < 2) {
 				if (data[point].n < 2) {
 					await axios.patch(
-						`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/${id}.json`,
+						`https://easy-588b2-default-rtdb.firebaseio.com/ipaddresses/${id}.json`,
 						{
 							ip: ip,
 							n: 2,
@@ -363,7 +363,7 @@ router.get('/verifyIp/:ip', async (req, res, next) => {
 					res.status(200).json({ success: true });
 				} else {
 					await axios.patch(
-						`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/${id}.json`,
+						`https://easy-588b2-default-rtdb.firebaseio.com/ipaddresses/${id}.json`,
 						{
 							ip: ip,
 							n: 1,

@@ -313,6 +313,75 @@ router.get('/updateCoinData', checkAuthorization, (req, res) => {
 
 });
 
+router.get('/verifyIp/:ip', async (req, res, next) => {
+	try {
+		const ip = req.params.ip;
+		var point = 0;
+		var id = null;
+		const response = await axios.get(
+			`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/.json`
+		);
+		const result = response.data;
+		if (result) {
+			var keys = [];
+			var data = [];
+			Object.entries(result).forEach(entry => {
+				const [key, value] = entry;
+				keys.push(key);
+				data.push(value);
+			});
+			console.log(data);
+			for (let i = 0; i < data.length; i++) {
+				console.log(data[i]);
+				if (data[i].ip == ip) {
+					point = i;
+					id = keys[i];
+					break;
+				}
+			}
+		}
+		if (!id) {
+			await axios.post(
+				`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/.json`,
+				{
+					ip: ip,
+					n: 1,
+					time: Date.now(),
+				}
+			);
+			res.status(200).json({ success: true });
+		} else {
+			if (Date.now() - data[point].time >= 3600000 || data[point].n < 2) {
+				if (data[point].n < 2) {
+					await axios.patch(
+						`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/${id}.json`,
+						{
+							ip: ip,
+							n: 2,
+						}
+					);
+					res.status(200).json({ success: true });
+				} else {
+					await axios.patch(
+						`https://pinkvote-436c5-default-rtdb.firebaseio.com/ipaddresses/${id}.json`,
+						{
+							ip: ip,
+							n: 1,
+							time: Date.now(),
+						}
+					);
+					res.status(200).json({ success: true });
+				}
+			} else {
+				res.status(200).json({ success: false });
+			}
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ success: false, err: err });
+	}
+});
+
 router.post("/verify-token", async (req,res) => {
     try{
         let token = req.body;
@@ -330,6 +399,7 @@ router.post("/verify-token", async (req,res) => {
         })
     }
 });
+
 
 
 module.exports = router;
